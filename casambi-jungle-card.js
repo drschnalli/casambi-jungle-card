@@ -235,7 +235,7 @@ class CasambiJungleCardEditor extends HTMLElement {
   findBy(domain, must = [], any = [], options = {}) {
     const states = this._hass?.states || {};
     const exclude = options.exclude || [];
-    const prefer = options.prefer || ["casambi", "jungle", "kalli", "bridge"];
+    const prefer = options.prefer || ["casambi", "jungle", "bridge"];
     const candidates = Object.keys(states).filter((entityId) => {
       if (!entityId.startsWith(`${domain}.`)) return false;
       const hay = this.words(entityId);
@@ -262,7 +262,7 @@ class CasambiJungleCardEditor extends HTMLElement {
     // With only frontend data we cannot always resolve HA device registry reliably, so this keeps a
     // lightweight heuristic and falls back to known Casambi/Jungle words.
     const lightName = this.words(lightEntity || "");
-    const known = ["kalli", "casambi", "jungle", "bridge"];
+    const known = ["casambi", "jungle", "bridge"];
     return known.filter((word) => lightName.includes(word));
   }
 
@@ -277,7 +277,7 @@ class CasambiJungleCardEditor extends HTMLElement {
     const cfg = cjMergeConfig(this.config || {});
     cfg.light = cfg.light || this.findBy("light", [], ["casambi", "minicontroller", "dim2warm"], { exclude: ["shelly"] });
     const contextWords = this.bridgePrefixFromLight(cfg.light);
-    const prefer = [...new Set([...contextWords, "kalli", "casambi", "jungle", "bridge"])]
+    const prefer = [...new Set([...contextWords, "casambi", "jungle", "bridge"])]
     cfg.active_scene = cfg.active_scene || this.findBy("sensor", ["active", "scene"], [], { prefer, exclude: ["shelly"] });
     cfg.status_entities = {
       ...(cfg.status_entities || {}),
@@ -290,7 +290,7 @@ class CasambiJungleCardEditor extends HTMLElement {
     cfg.api_fetch = cfg.api_fetch || this.findBy("button", ["api", "fetch"], [], { prefer, exclude: ["shelly"] });
     // Important: never pick generic Shelly or other vendor restart buttons.
     // Only accept restart buttons that also look like Casambi/Jungle/Kalli/Bridge.
-    cfg.restart = cfg.restart || this.findBy("button", ["restart"], ["casambi", "kalli", "bridge", "jungle"], { prefer, exclude: ["shelly", "plus2pm", "shellyplus", "neu starten"] });
+    cfg.restart = cfg.restart || this.findBy("button", ["restart"], ["casambi", "bridge", "jungle"], { prefer, exclude: ["shelly", "plus2pm", "shellyplus", "neu starten"] });
     if (!cfg.scenes || cfg.scenes.length === 0) cfg.scenes = this.autoScenes().filter((entityId) => !this.words(entityId).includes("shelly"));
     this.config = cfg;
     this.notify();
