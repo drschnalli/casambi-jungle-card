@@ -111,7 +111,23 @@ class CasambiJungleCard extends HTMLElement {
     const value = this.state(entity);
     if (label === "API" && /^https?:\/\//i.test(String(value))) return "available";
     if (label === "API" && String(value).includes("/api/")) return "available";
+    if (label === "Transport" && String(value).toLowerCase() === "hybrid") {
+      const mqttSwitch = this.findEntityByWords("switch", ["mqtt", "mode"]);
+      const directSwitch = this.findEntityByWords("switch", ["direct", "mode"]);
+      const mqtt = String(this.state(mqttSwitch)).toLowerCase();
+      const direct = String(this.state(directSwitch)).toLowerCase();
+      if (["off", "false", "0"].includes(mqtt) && ["on", "true", "1"].includes(direct)) return "direct";
+    }
     return value;
+  }
+
+  findEntityByWords(domain, words) {
+    const states = this._hass?.states || {};
+    return Object.keys(states).find((entityId) => {
+      if (!entityId.startsWith(`${domain}.`)) return false;
+      const hay = `${entityId} ${(states[entityId].attributes?.friendly_name || "")}`.toLowerCase();
+      return words.every((word) => hay.includes(word));
+    }) || "";
   }
 
   ledChip(label, entity, icon) {
@@ -192,8 +208,6 @@ class CasambiJungleCardEditor extends HTMLElement {
   set hass(hass) {
     this._hass = hass;
     if (!this.config) this.config = cjMergeConfig({});
-    // Do not fully re-render on every hass update. Home Assistant updates hass frequently,
-    // and a full re-render closes open entity picker dropdowns immediately.
     if (this._hasRendered) {
       this._pickerRefs.forEach((picker) => { picker.hass = hass; });
       return;
@@ -211,6 +225,50 @@ class CasambiJungleCardEditor extends HTMLElement {
     if (!cleaned.scenes) cleaned.scenes = [];
     if (!cleaned.status_entities) cleaned.status_entities = {};
     return cleaned;
+  }
+
+  words(entityId) {
+    const states = this._hass?.states || {};
+    return `${entityId} ${(states[entityId]?.attributes?.friendly_name || "")} ${(states[entityId]?.attributes?.device_class || "")}`.toLowerCase();
+  }
+
+  findBy(domain, must = [], any = []) {
+    const states = this._hass?.states || {};
+    return Object.keys(states).find((entityId) => {
+      if (!entityId.startsWith(`${domain}.`)) return false;
+      const hay = this.words(entityId);
+      const mustOk = must.every((word) => hay.includes(word));
+      const anyOk = any.length === 0 || any.some((word) => hay.includes(word));
+      return mustOk && anyOk;
+    }) || "";
+  }
+
+  autoScenes() {
+    const states = this._hass?.states || {};
+    return Object.keys(states)
+      .filter((entityId) => entityId.startsWith("button.") && states[entityId].attributes && (states[entityId].attributes.scene_id !== undefined || states[entityId].attributes.scene_name !== undefined))
+      .sort((a, b) => (states[a].attributes.scene_id || 0) - (states[b].attributes.scene_id || 0));
+  }
+
+  autoConfig() {
+    const cfg = cjMergeConfig(this.config || {});
+    cfg.light = cfg.light || this.findBy("light", [], ["casambi", "minicontroller", "dim2warm"]);
+    cfg.active_scene = cfg.active_scene || this.findBy("sensor", ["active", "scene"]);
+    cfg.status_entities = {
+      ...(cfg.status_entities || {}),
+      bridge: cfg.status_entities?.bridge || this.findBy("sensor", ["bridge", "status"]),
+      ble: cfg.status_entities?.ble || this.findBy("sensor", ["ble", "status"]),
+      transport: cfg.status_entities?.transport || this.findBy("sensor", ["transport", "mode"]),
+      direct_api: cfg.status_entities?.direct_api || this.findBy("sensor", ["direct", "api"]),
+    };
+    cfg.web_url = cfg.web_url || this.findBy("sensor", ["web", "interface"]);
+    cfg.api_fetch = cfg.api_fetch || this.findBy("button", ["api", "fetch"]);
+    cfg.restart = cfg.restart || this.findBy("button", ["restart"]);
+    if (!cfg.scenes || cfg.scenes.length === 0) cfg.scenes = this.autoScenes();
+    this.config = cfg;
+    this.notify();
+    this._hasRendered = false;
+    this.render();
   }
 
   label(text) {
@@ -233,7 +291,6 @@ class CasambiJungleCardEditor extends HTMLElement {
       const next = event.detail.value || "";
       if (path === "_scene_picker") {
         this.addScene(next);
-        // Keep picker empty after adding a scene without re-rendering the whole editor.
         picker.value = "";
         return;
       }
@@ -318,9 +375,10 @@ class CasambiJungleCardEditor extends HTMLElement {
         .box{padding:2px 0}.field{margin:12px 0}.label{font-weight:700;margin-bottom:5px;color:var(--primary-text-color)}
         input{width:100%;box-sizing:border-box;padding:8px;border-radius:8px;border:1px solid var(--divider-color);background:var(--card-background-color);color:var(--primary-text-color)}
         .section{margin-top:18px;padding-top:12px;border-top:1px solid var(--divider-color);font-weight:900;color:#58d7c4;text-transform:uppercase;letter-spacing:.04em}
-        .sceneRow{display:flex;gap:8px;align-items:center;margin:6px 0}.sceneRow code{flex:1;overflow:hidden;text-overflow:ellipsis}.remove{background:#092332;color:#d5ffff;border:1px solid #27606b;border-radius:8px;padding:6px 9px}.hint{font-size:12px;color:var(--secondary-text-color);margin-top:8px}
+        .sceneRow{display:flex;gap:8px;align-items:center;margin:6px 0}.sceneRow code{flex:1;overflow:hidden;text-overflow:ellipsis}.remove,.auto{background:#092332;color:#d5ffff;border:1px solid #27606b;border-radius:8px;padding:8px 10px}.auto{width:100%;font-weight:900;margin:8px 0 14px;cursor:pointer;background:linear-gradient(135deg,#0b3542,#0d5d58)}.hint{font-size:12px;color:var(--secondary-text-color);margin-top:8px}
       </style><div class="box"></div>`;
     const box = this.shadowRoot.querySelector(".box");
+    const auto = document.createElement("button"); auto.className = "auto"; auto.textContent = "Auto-detect Casambi entities"; auto.addEventListener("click", () => this.autoConfig()); box.appendChild(auto);
     box.appendChild(this.text("Title", "title", config.title, "Casambi Jungle"));
     box.appendChild(this.picker("Light entity", "light", "light", config.light));
     box.appendChild(this.picker("Active scene sensor", "active_scene", "sensor", config.active_scene));
@@ -336,7 +394,7 @@ class CasambiJungleCardEditor extends HTMLElement {
     const scenesTitle = document.createElement("div"); scenesTitle.className = "section"; scenesTitle.textContent = "Scene buttons"; box.appendChild(scenesTitle);
     box.appendChild(this.picker("Add scene button", "_scene_picker", "button", ""));
     const list = document.createElement("div"); list.id = "scene-list"; box.appendChild(list);
-    const hint = document.createElement("div"); hint.className = "hint"; hint.textContent = "If no scenes are selected, the card auto-detects scene buttons from the HACS integration."; box.appendChild(hint);
+    const hint = document.createElement("div"); hint.className = "hint"; hint.textContent = "Press auto-detect to fill the YAML, or leave fields empty to use runtime auto-detection."; box.appendChild(hint);
     this._hasRendered = true;
     this.renderSceneList();
   }
@@ -345,4 +403,4 @@ class CasambiJungleCardEditor extends HTMLElement {
 customElements.define("casambi-jungle-card", CasambiJungleCard);
 customElements.define("casambi-jungle-card-editor", CasambiJungleCardEditor);
 window.customCards = window.customCards || [];
-window.customCards.push({ type: "casambi-jungle-card", name: "Casambi Jungle Card", description: "Dark jungle blue-green control card for Casambi Jungle Bridge" });
+window.customCards.push({ type: "casambi-jungle-card", name: "Casambi Jungle Card", description: "Dark jungle blue-green card with auto-detect for Casambi Jungle Bridge" });
