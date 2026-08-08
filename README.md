@@ -1,27 +1,19 @@
 # Casambi Jungle Card
 
-A modern dark-blue Lovelace custom card for the Casambi Jungle Bridge Home Assistant integration.
+A modern dark jungle blue-green Lovelace custom card for the Casambi Jungle Bridge Home Assistant integration.
 
 Repository: https://github.com/drschnalli/casambi-jungle-card
 
-## Features v0.3.0
+## Features v0.4.0
 
-- Redesigned dark-blue/neon-cyan visual style.
-- Blue LED style status symbols for Bridge, BLE, Transport and Direct API.
-- Improved visual editor with entity pickers for:
-  - Light
-  - Active scene sensor
-  - Bridge status sensor
-  - BLE status sensor
-  - Transport sensor
-  - Direct API sensor
-  - Web UI URL sensor
-  - API Fetch button
-  - Restart button
-  - Scene buttons with add/remove UI
-- Auto scene discovery still works if no scene buttons are configured.
-- Light control with power orb, brightness slider and quick ON/OFF/40% actions.
+- Dark jungle blue/green design with calmer cyan/teal highlights.
+- Blue LED status indicators with less saturated colors.
+- Fixed visual editor initialization error.
+- Improved visual editor with proper entity pickers and stable default config handling.
+- Cleaner Direct API display. URL-like API sensors are displayed as `available` instead of a long URL block.
+- Light control with power orb, brightness slider and quick ON/OFF/40% controls.
 - Scene buttons with active scene highlight.
+- Auto-detection fallback for Casambi light, scenes and common status sensors.
 
 ## Installation through HACS
 
@@ -38,8 +30,6 @@ Then install the card. HACS should add the Lovelace resource automatically.
 ```yaml
 type: custom:casambi-jungle-card
 ```
-
-The card tries to auto-detect Casambi entities.
 
 ## Full YAML example
 
