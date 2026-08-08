@@ -149,9 +149,9 @@ class CasambiJungleCard extends HTMLElement {
 
     this.shadowRoot.innerHTML = `
       <style>
-        :host{display:block}.wrap{padding:18px}ha-card{overflow:hidden;border-radius:26px;background:radial-gradient(circle at 12% 0%,#0e3d47 0,#071f2e 34%,#041017 100%);border:1px solid rgba(51,206,228,.36);box-shadow:0 0 34px rgba(4,158,203,.22);color:#eefcff;font-family:var(--primary-font-family,Inter,Roboto,Arial,sans-serif)}
-        .hero{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.title{font-size:24px;font-weight:900;color:#8cefff;letter-spacing:.2px;text-shadow:0 0 18px rgba(77,208,225,.55)}.sub{font-size:12px;color:#98bfc1;margin-top:4px}.badge{padding:7px 10px;border:1px solid rgba(75,224,217,.30);border-radius:999px;background:rgba(4,30,43,.72);color:#bffcff;font-size:12px}
-        .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:16px}.panel{border:1px solid rgba(75,224,217,.20);background:linear-gradient(180deg,rgba(4,28,38,.90),rgba(2,12,18,.90));border-radius:20px;padding:14px;box-shadow:inset 0 0 30px rgba(0,10,18,.92)}.light{grid-column:span 2}.sectionTitle{font-size:13px;text-transform:uppercase;letter-spacing:.08em;font-weight:900;color:#6de5ff;margin-bottom:12px}.orbRow{display:flex;align-items:center;gap:18px}.orb{width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;letter-spacing:1px;border:2px solid rgba(69,194,215,.34);background:radial-gradient(circle,#0a3540 0,#061924 70%);color:#94b8bf;box-shadow:inset 0 0 28px rgba(0,0,0,.85),0 0 20px rgba(0,157,190,.16)}.orb.on{background:radial-gradient(circle,#eaffe9 0,#72f2d6 23%,#1db8d3 58%,#073b45 100%);color:#001a1f;box-shadow:0 0 34px rgba(75,224,217,.75),inset 0 0 18px rgba(255,255,255,.58)}.orb.off{border-color:rgba(69,117,132,.46);color:#89a8b0}.meta{flex:1}.state{font-size:21px;font-weight:900;color:${isOn ? "#9fffea" : "#9ebbc1"}}.muted{color:#98bfc1;font-size:12px}.bar{height:12px;background:#020d13;border:1px solid rgba(75,224,217,.30);border-radius:999px;overflow:hidden;margin:12px 0}.bar span{display:block;height:100%;width:${pct}%;background:linear-gradient(90deg,#0ba7d1,#41dbc8,#99ffe8);box-shadow:0 0 14px rgba(75,224,217,.75)}.slider{width:100%;accent-color:#41dbc8}.actions,.scenes,.chips{display:flex;flex-wrap:wrap;gap:9px}.btn,.scene{border-radius:14px;padding:11px 14px;font-weight:800;cursor:pointer;background:rgba(5,36,47,.82);color:#c7ffff;border:1px solid rgba(75,224,217,.34);box-shadow:0 0 12px rgba(0,134,148,.08)}.btn:hover,.scene:hover{border-color:#90fff2;box-shadow:0 0 18px rgba(75,224,217,.22)}.btn.primary{background:linear-gradient(135deg,#0ba7d1,#41dbc8);color:#001a1f}.btn.off{background:rgba(30,54,66,.95);color:#d8f5fa}.btn.dim{background:linear-gradient(135deg,#1f6072,#84e8dd);color:#001a1f}.scene.active{background:linear-gradient(135deg,#0b7fb6,#41dbc8);color:#001a1f;box-shadow:0 0 24px rgba(65,219,200,.48)}.chip{position:relative;display:grid;grid-template-columns:auto auto 1fr;gap:4px 8px;align-items:center;border-radius:14px;padding:9px 11px;background:rgba(3,19,29,.84);border:1px solid rgba(75,224,217,.18);min-width:138px}.chip b{grid-column:3;font-size:12px;word-break:break-word}.chip.ok b{color:#a0fff0}.chip.standby b{color:#71919a}.led{width:10px;height:10px;border-radius:50%;background:#1b3c48;box-shadow:inset 0 0 6px #000}.chip.ok .led{background:#5deaff;box-shadow:0 0 12px #5deaff,0 0 24px rgba(93,234,255,.55)}ha-icon{width:18px;color:#66e9ff}.chipLabel{font-size:12px;color:#dafcff}.links{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}a{color:#9fffea;text-decoration:none}.empty{color:#7f9ca4}.tools{min-height:78px}@media(max-width:650px){.light{grid-column:span 1}.orbRow{flex-direction:column;align-items:flex-start}.orb{width:82px;height:82px}}
+        :host{display:block}.wrap{padding:18px}ha-card{overflow:hidden;border-radius:26px;background:radial-gradient(circle at 12% 0%,#093c3a 0,#071d2b 36%,#030b12 100%);border:1px solid rgba(58,199,190,.34);box-shadow:0 0 34px rgba(0,126,145,.18);color:#eefcff;font-family:var(--primary-font-family,Inter,Roboto,Arial,sans-serif)}
+        .hero{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.title{font-size:24px;font-weight:900;color:#8ff5dc;letter-spacing:.2px;text-shadow:0 0 18px rgba(77,225,190,.46)}.sub{font-size:12px;color:#98bfc1;margin-top:4px}.badge{padding:7px 10px;border:1px solid rgba(80,211,181,.28);border-radius:999px;background:rgba(4,30,43,.72);color:#bffcff;font-size:12px}
+        .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:16px}.panel{border:1px solid rgba(80,211,181,.18);background:linear-gradient(180deg,rgba(4,28,38,.90),rgba(2,12,18,.90));border-radius:20px;padding:14px;box-shadow:inset 0 0 30px rgba(0,10,18,.92)}.light{grid-column:span 2}.sectionTitle{font-size:13px;text-transform:uppercase;letter-spacing:.08em;font-weight:900;color:#6ee7d0;margin-bottom:12px}.orbRow{display:flex;align-items:center;gap:18px}.orb{width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;letter-spacing:1px;border:2px solid rgba(69,194,215,.34);background:radial-gradient(circle,#0a3540 0,#061924 70%);color:#94b8bf;box-shadow:inset 0 0 28px rgba(0,0,0,.85),0 0 20px rgba(0,157,190,.16)}.orb.on{background:radial-gradient(circle,#eaffe9 0,#72f2d6 23%,#1db8d3 58%,#073b45 100%);color:#001a1f;box-shadow:0 0 34px rgba(80,211,181,.62),inset 0 0 18px rgba(255,255,255,.58)}.orb.off{border-color:rgba(69,117,132,.46);color:#89a8b0}.meta{flex:1}.state{font-size:21px;font-weight:900;color:${isOn ? "#a6f2d7" : "#9ebbc1"}}.muted{color:#98bfc1;font-size:12px}.bar{height:12px;background:#020d13;border:1px solid rgba(80,211,181,.28);border-radius:999px;overflow:hidden;margin:12px 0}.bar span{display:block;height:100%;width:${pct}%;background:linear-gradient(90deg,#0d93bd,#39cdb5,#9bf7d6);box-shadow:0 0 14px rgba(80,211,181,.62)}.slider{width:100%;accent-color:#39cdb5}.actions,.scenes,.chips{display:flex;flex-wrap:wrap;gap:9px}.btn,.scene{border-radius:14px;padding:11px 14px;font-weight:800;cursor:pointer;background:rgba(5,36,47,.82);color:#c7ffff;border:1px solid rgba(80,211,181,.32);box-shadow:0 0 12px rgba(0,134,148,.08)}.btn:hover,.scene:hover{border-color:#90fff2;box-shadow:0 0 18px rgba(75,224,217,.22)}.btn.primary{background:linear-gradient(135deg,#0d93bd,#39cdb5);color:#001a1f}.btn.off{background:rgba(30,54,66,.95);color:#d8f5fa}.btn.dim{background:linear-gradient(135deg,#1f6072,#84e8dd);color:#001a1f}.scene.active{background:linear-gradient(135deg,#0b7fb6,#39cdb5);color:#001a1f;box-shadow:0 0 24px rgba(65,219,200,.48)}.chip{position:relative;display:grid;grid-template-columns:auto auto 1fr;gap:4px 8px;align-items:center;border-radius:14px;padding:9px 11px;background:rgba(3,19,29,.84);border:1px solid rgba(75,224,217,.18);min-width:138px}.chip b{grid-column:3;font-size:12px;word-break:break-word}.chip.ok b{color:#a0fff0}.chip.standby b{color:#71919a}.led{width:10px;height:10px;border-radius:50%;background:#1b3c48;box-shadow:inset 0 0 6px #000}.chip.ok .led{background:#65def5;box-shadow:0 0 12px #65def5,0 0 24px rgba(93,234,255,.55)}ha-icon{width:18px;color:#66dfe9}.chipLabel{font-size:12px;color:#dafcff}.links{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}a{color:#a6f2d7;text-decoration:none}.empty{color:#7f9ca4}.tools{min-height:78px}@media(max-width:650px){.light{grid-column:span 1}.orbRow{flex-direction:column;align-items:flex-start}.orb{width:82px;height:82px}}
       </style>
       <ha-card>
         <div class="wrap">
@@ -178,22 +178,39 @@ class CasambiJungleCardEditor extends HTMLElement {
   constructor() {
     super();
     this.config = cjMergeConfig({});
+    this._hasRendered = false;
+    this._pickerRefs = [];
     if (!this.shadowRoot) this.attachShadow({ mode: "open" });
   }
 
   setConfig(config) {
     this.config = cjMergeConfig(config || {});
+    this._hasRendered = false;
     this.render();
   }
 
   set hass(hass) {
     this._hass = hass;
     if (!this.config) this.config = cjMergeConfig({});
+    // Do not fully re-render on every hass update. Home Assistant updates hass frequently,
+    // and a full re-render closes open entity picker dropdowns immediately.
+    if (this._hasRendered) {
+      this._pickerRefs.forEach((picker) => { picker.hass = hass; });
+      return;
+    }
     this.render();
   }
 
   notify() {
-    this.dispatchEvent(new CustomEvent("config-changed", { detail: { config: this.config }, bubbles: true, composed: true }));
+    this.dispatchEvent(new CustomEvent("config-changed", { detail: { config: this.cleanConfig(this.config) }, bubbles: true, composed: true }));
+  }
+
+  cleanConfig(config) {
+    const cleaned = cjMergeConfig(config || {});
+    delete cleaned._scene_picker;
+    if (!cleaned.scenes) cleaned.scenes = [];
+    if (!cleaned.status_entities) cleaned.status_entities = {};
+    return cleaned;
   }
 
   label(text) {
@@ -212,7 +229,17 @@ class CasambiJungleCardEditor extends HTMLElement {
     picker.value = value || "";
     if (domain) picker.includeDomains = [domain];
     picker.allowCustomEntity = true;
-    picker.addEventListener("value-changed", (event) => this.setPath(path, event.detail.value || ""));
+    picker.addEventListener("value-changed", (event) => {
+      const next = event.detail.value || "";
+      if (path === "_scene_picker") {
+        this.addScene(next);
+        // Keep picker empty after adding a scene without re-rendering the whole editor.
+        picker.value = "";
+        return;
+      }
+      this.setPathWithoutRender(path, next);
+    });
+    this._pickerRefs.push(picker);
     wrap.appendChild(picker);
     return wrap;
   }
@@ -224,12 +251,12 @@ class CasambiJungleCardEditor extends HTMLElement {
     const input = document.createElement("input");
     input.value = value || "";
     input.placeholder = placeholder;
-    input.addEventListener("change", (event) => this.setPath(path, event.target.value));
+    input.addEventListener("change", (event) => this.setPathWithoutRender(path, event.target.value));
     wrap.appendChild(input);
     return wrap;
   }
 
-  setPath(path, value) {
+  setPathWithoutRender(path, value) {
     const parts = path.split(".");
     const config = cjMergeConfig(this.config || {});
     let ref = config;
@@ -240,7 +267,6 @@ class CasambiJungleCardEditor extends HTMLElement {
     ref[parts[parts.length - 1]] = value;
     this.config = config;
     this.notify();
-    this.render();
   }
 
   addScene(entity) {
@@ -249,13 +275,33 @@ class CasambiJungleCardEditor extends HTMLElement {
     if (!scenes.includes(entity)) scenes.push(entity);
     this.config = { ...cjMergeConfig(this.config), scenes };
     this.notify();
-    this.render();
+    this.renderSceneList();
   }
 
   removeScene(entity) {
     this.config = { ...cjMergeConfig(this.config), scenes: (this.config?.scenes || []).filter((item) => item !== entity) };
     this.notify();
-    this.render();
+    this.renderSceneList();
+  }
+
+  renderSceneList() {
+    const list = this.shadowRoot?.querySelector("#scene-list");
+    if (!list) return;
+    list.innerHTML = "";
+    const scenes = this.config?.scenes || [];
+    scenes.forEach((entity) => {
+      const row = document.createElement("div");
+      row.className = "sceneRow";
+      const code = document.createElement("code");
+      code.textContent = entity;
+      const button = document.createElement("button");
+      button.className = "remove";
+      button.textContent = "Remove";
+      button.addEventListener("click", () => this.removeScene(entity));
+      row.appendChild(code);
+      row.appendChild(button);
+      list.appendChild(row);
+    });
   }
 
   render() {
@@ -266,11 +312,12 @@ class CasambiJungleCardEditor extends HTMLElement {
     }
     if (!this.config) this.config = cjMergeConfig({});
     const config = cjMergeConfig(this.config);
+    this._pickerRefs = [];
     this.shadowRoot.innerHTML = `
       <style>
         .box{padding:2px 0}.field{margin:12px 0}.label{font-weight:700;margin-bottom:5px;color:var(--primary-text-color)}
         input{width:100%;box-sizing:border-box;padding:8px;border-radius:8px;border:1px solid var(--divider-color);background:var(--card-background-color);color:var(--primary-text-color)}
-        .section{margin-top:18px;padding-top:12px;border-top:1px solid var(--divider-color);font-weight:900;color:var(--primary-color)}
+        .section{margin-top:18px;padding-top:12px;border-top:1px solid var(--divider-color);font-weight:900;color:#58d7c4;text-transform:uppercase;letter-spacing:.04em}
         .sceneRow{display:flex;gap:8px;align-items:center;margin:6px 0}.sceneRow code{flex:1;overflow:hidden;text-overflow:ellipsis}.remove{background:#092332;color:#d5ffff;border:1px solid #27606b;border-radius:8px;padding:6px 9px}.hint{font-size:12px;color:var(--secondary-text-color);margin-top:8px}
       </style><div class="box"></div>`;
     const box = this.shadowRoot.querySelector(".box");
@@ -287,13 +334,11 @@ class CasambiJungleCardEditor extends HTMLElement {
     box.appendChild(this.picker("API Fetch button", "api_fetch", "button", config.api_fetch));
     box.appendChild(this.picker("Restart button", "restart", "button", config.restart));
     const scenesTitle = document.createElement("div"); scenesTitle.className = "section"; scenesTitle.textContent = "Scene buttons"; box.appendChild(scenesTitle);
-    const selectWrap = this.picker("Add scene button", "_scene_picker", "button", ""); box.appendChild(selectWrap);
-    selectWrap.querySelector("ha-entity-picker").addEventListener("value-changed", (event) => this.addScene(event.detail.value));
-    (config.scenes || []).forEach((entity) => {
-      const row = document.createElement("div"); row.className = "sceneRow"; row.innerHTML = `<code>${entity}</code>`;
-      const button = document.createElement("button"); button.className = "remove"; button.textContent = "Remove"; button.addEventListener("click", () => this.removeScene(entity)); row.appendChild(button); box.appendChild(row);
-    });
+    box.appendChild(this.picker("Add scene button", "_scene_picker", "button", ""));
+    const list = document.createElement("div"); list.id = "scene-list"; box.appendChild(list);
     const hint = document.createElement("div"); hint.className = "hint"; hint.textContent = "If no scenes are selected, the card auto-detects scene buttons from the HACS integration."; box.appendChild(hint);
+    this._hasRendered = true;
+    this.renderSceneList();
   }
 }
 

@@ -4,11 +4,11 @@ A modern dark jungle blue-green Lovelace custom card for the Casambi Jungle Brid
 
 Repository: https://github.com/drschnalli/casambi-jungle-card
 
-## Features v0.4.0
+## Features v0.4.1
 
 - Dark jungle blue/green design with calmer cyan/teal highlights.
 - Blue LED status indicators with less saturated colors.
-- Fixed visual editor initialization error.
+- Fixed visual editor dropdown closing immediately.
 - Improved visual editor with proper entity pickers and stable default config handling.
 - Cleaner Direct API display. URL-like API sensors are displayed as `available` instead of a long URL block.
 - Light control with power orb, brightness slider and quick ON/OFF/40% controls.
@@ -51,3 +51,11 @@ web_url: sensor.kalli_web_interface_url
 api_fetch: button.kalli_api_fetch
 restart: button.kalli_restart_bridge
 ```
+
+
+## Fix v0.4.1
+
+- Prevents full editor re-render on every Home Assistant `hass` update.
+- Entity picker dropdowns should now stay open and selectable.
+- Scene list updates without rebuilding the whole editor.
+- Even calmer dark green-blue jungle color tuning.
