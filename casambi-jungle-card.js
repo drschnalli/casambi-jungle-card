@@ -232,15 +232,38 @@ class CasambiJungleCardEditor extends HTMLElement {
     return `${entityId} ${(states[entityId]?.attributes?.friendly_name || "")} ${(states[entityId]?.attributes?.device_class || "")}`.toLowerCase();
   }
 
-  findBy(domain, must = [], any = []) {
+  findBy(domain, must = [], any = [], options = {}) {
     const states = this._hass?.states || {};
-    return Object.keys(states).find((entityId) => {
+    const exclude = options.exclude || [];
+    const prefer = options.prefer || ["casambi", "jungle", "kalli", "bridge"];
+    const candidates = Object.keys(states).filter((entityId) => {
       if (!entityId.startsWith(`${domain}.`)) return false;
       const hay = this.words(entityId);
+      if (exclude.some((word) => hay.includes(word))) return false;
       const mustOk = must.every((word) => hay.includes(word));
       const anyOk = any.length === 0 || any.some((word) => hay.includes(word));
       return mustOk && anyOk;
-    }) || "";
+    });
+    candidates.sort((a, b) => this.scoreEntity(b, prefer) - this.scoreEntity(a, prefer));
+    return candidates[0] || "";
+  }
+
+  scoreEntity(entityId, prefer = []) {
+    const hay = this.words(entityId);
+    let score = 0;
+    prefer.forEach((word, index) => { if (hay.includes(word)) score += 30 - index; });
+    if (hay.includes("shelly")) score -= 200;
+    if (hay.includes("restart") || hay.includes("neu starten")) score += 4;
+    return score;
+  }
+
+  bridgePrefixFromLight(lightEntity) {
+    // Current HACS entities often use the bridge/device name as prefix, e.g. sensor.kalli_bridge_status.
+    // With only frontend data we cannot always resolve HA device registry reliably, so this keeps a
+    // lightweight heuristic and falls back to known Casambi/Jungle words.
+    const lightName = this.words(lightEntity || "");
+    const known = ["kalli", "casambi", "jungle", "bridge"];
+    return known.filter((word) => lightName.includes(word));
   }
 
   autoScenes() {
@@ -252,19 +275,23 @@ class CasambiJungleCardEditor extends HTMLElement {
 
   autoConfig() {
     const cfg = cjMergeConfig(this.config || {});
-    cfg.light = cfg.light || this.findBy("light", [], ["casambi", "minicontroller", "dim2warm"]);
-    cfg.active_scene = cfg.active_scene || this.findBy("sensor", ["active", "scene"]);
+    cfg.light = cfg.light || this.findBy("light", [], ["casambi", "minicontroller", "dim2warm"], { exclude: ["shelly"] });
+    const contextWords = this.bridgePrefixFromLight(cfg.light);
+    const prefer = [...new Set([...contextWords, "kalli", "casambi", "jungle", "bridge"])]
+    cfg.active_scene = cfg.active_scene || this.findBy("sensor", ["active", "scene"], [], { prefer, exclude: ["shelly"] });
     cfg.status_entities = {
       ...(cfg.status_entities || {}),
-      bridge: cfg.status_entities?.bridge || this.findBy("sensor", ["bridge", "status"]),
-      ble: cfg.status_entities?.ble || this.findBy("sensor", ["ble", "status"]),
-      transport: cfg.status_entities?.transport || this.findBy("sensor", ["transport", "mode"]),
-      direct_api: cfg.status_entities?.direct_api || this.findBy("sensor", ["direct", "api"]),
+      bridge: cfg.status_entities?.bridge || this.findBy("sensor", ["bridge", "status"], [], { prefer, exclude: ["shelly"] }),
+      ble: cfg.status_entities?.ble || this.findBy("sensor", ["ble", "status"], [], { prefer, exclude: ["shelly"] }),
+      transport: cfg.status_entities?.transport || this.findBy("sensor", ["transport", "mode"], [], { prefer, exclude: ["shelly"] }),
+      direct_api: cfg.status_entities?.direct_api || this.findBy("sensor", ["direct", "api"], [], { prefer, exclude: ["shelly"] }),
     };
-    cfg.web_url = cfg.web_url || this.findBy("sensor", ["web", "interface"]);
-    cfg.api_fetch = cfg.api_fetch || this.findBy("button", ["api", "fetch"]);
-    cfg.restart = cfg.restart || this.findBy("button", ["restart"]);
-    if (!cfg.scenes || cfg.scenes.length === 0) cfg.scenes = this.autoScenes();
+    cfg.web_url = cfg.web_url || this.findBy("sensor", ["web", "interface"], [], { prefer, exclude: ["shelly"] });
+    cfg.api_fetch = cfg.api_fetch || this.findBy("button", ["api", "fetch"], [], { prefer, exclude: ["shelly"] });
+    // Important: never pick generic Shelly or other vendor restart buttons.
+    // Only accept restart buttons that also look like Casambi/Jungle/Kalli/Bridge.
+    cfg.restart = cfg.restart || this.findBy("button", ["restart"], ["casambi", "kalli", "bridge", "jungle"], { prefer, exclude: ["shelly", "plus2pm", "shellyplus", "neu starten"] });
+    if (!cfg.scenes || cfg.scenes.length === 0) cfg.scenes = this.autoScenes().filter((entityId) => !this.words(entityId).includes("shelly"));
     this.config = cfg;
     this.notify();
     this._hasRendered = false;
@@ -394,7 +421,7 @@ class CasambiJungleCardEditor extends HTMLElement {
     const scenesTitle = document.createElement("div"); scenesTitle.className = "section"; scenesTitle.textContent = "Scene buttons"; box.appendChild(scenesTitle);
     box.appendChild(this.picker("Add scene button", "_scene_picker", "button", ""));
     const list = document.createElement("div"); list.id = "scene-list"; box.appendChild(list);
-    const hint = document.createElement("div"); hint.className = "hint"; hint.textContent = "Press auto-detect to fill the YAML, or leave fields empty to use runtime auto-detection."; box.appendChild(hint);
+    const hint = document.createElement("div"); hint.className = "hint"; hint.textContent = "Press auto-detect to fill the YAML. Auto-detect prefers entities belonging to the selected Casambi light and avoids unrelated devices like Shelly."; box.appendChild(hint);
     this._hasRendered = true;
     this.renderSceneList();
   }
