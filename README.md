@@ -1,17 +1,27 @@
 # Casambi Jungle Card
 
-A Lovelace custom card for the Casambi Jungle Bridge Home Assistant integration.
+A modern dark-blue Lovelace custom card for the Casambi Jungle Bridge Home Assistant integration.
 
 Repository: https://github.com/drschnalli/casambi-jungle-card
 
-## Features v0.2.0
+## Features v0.3.0
 
-- Jungle/neon design.
-- Light card with state, brightness slider and quick ON/OFF/40% controls.
+- Redesigned dark-blue/neon-cyan visual style.
+- Blue LED style status symbols for Bridge, BLE, Transport and Direct API.
+- Improved visual editor with entity pickers for:
+  - Light
+  - Active scene sensor
+  - Bridge status sensor
+  - BLE status sensor
+  - Transport sensor
+  - Direct API sensor
+  - Web UI URL sensor
+  - API Fetch button
+  - Restart button
+  - Scene buttons with add/remove UI
+- Auto scene discovery still works if no scene buttons are configured.
+- Light control with power orb, brightness slider and quick ON/OFF/40% actions.
 - Scene buttons with active scene highlight.
-- Bridge status chips for MQTT/Direct/BLE/transport entities.
-- Works with the Casambi Jungle Bridge HACS integration v2.2.0 or newer.
-- Includes a simple visual card editor.
 
 ## Installation through HACS
 
@@ -23,7 +33,15 @@ https://github.com/drschnalli/casambi-jungle-card
 
 Then install the card. HACS should add the Lovelace resource automatically.
 
-## Example YAML
+## Minimal YAML
+
+```yaml
+type: custom:casambi-jungle-card
+```
+
+The card tries to auto-detect Casambi entities.
+
+## Full YAML example
 
 ```yaml
 type: custom:casambi-jungle-card
@@ -33,6 +51,7 @@ active_scene: sensor.kalli_active_scene
 scenes:
   - button.an
   - button.aus
+  - button.testszene
 status_entities:
   bridge: sensor.kalli_bridge_status
   ble: sensor.kalli_ble_status
@@ -42,9 +61,3 @@ web_url: sensor.kalli_web_interface_url
 api_fetch: button.kalli_api_fetch
 restart: button.kalli_restart_bridge
 ```
-
-## Auto mode
-
-If `scenes` is empty, the card tries to find scene buttons using the `scene_id` attribute that the HACS integration exposes.
-
-If `light` is empty, the card attempts to auto-pick the first available light entity with `casambi` in the entity ID or friendly name.
